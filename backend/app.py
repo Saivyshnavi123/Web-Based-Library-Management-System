@@ -14,7 +14,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Flask app setup
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://avinashgo:nKIjiGumViRKu3QwdalfksOIVwkeOFC0@dpg-d1becqadbo4c73celjjg-a.oregon-postgres.render.com/library_rmue')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://saichowdhary:h74bGPyeHjXOWu6c3hy2mwVLWa8HusOc@dpg-d1od6ss9c44c73ffgvf0-a/library_rmue_3uf3')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SWAGGER'] = {'title': 'Library Management API', 'uiversion': 3}
