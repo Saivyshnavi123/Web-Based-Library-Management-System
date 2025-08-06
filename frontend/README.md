@@ -1,70 +1,263 @@
-# Getting Started with Create React App
+# Library Management API
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Flask-based backend application for managing a digital library system, featuring student and librarian roles, book inventory management, reservations, and image uploads. Swagger UI is provided for interactive API documentation.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📄 Table of Contents
 
-### `npm start`
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Setup](#database-setup)
+- [Running the Application](#running-the-application)
+- [API Documentation](#api-documentation)
+- [Usage Examples](#usage-examples)
+  - [Register & Login](#register--login)
+  - [Books Endpoints](#books-endpoints)
+  - [Reservations](#reservations)
+  - [User Management](#user-management)
+  - [Image Upload](#image-upload)
+- [Project Structure](#project-structure)
+- [Frontend](#frontend)
+- [Resources](#resources)
+- [Contributing](#contributing)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Contributing](#contributing)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Overview
 
-### `npm run build`
+The Library Management API enables two roles:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Students**: Browse, reserve, and view reservations.
+- **Librarians**: Manage book inventory (add/update), fulfill/return reservations, and upload book cover images.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+It uses Flask for the web framework, SQLAlchemy for ORM, and PostgreSQL as the database. Swagger (Flasgger) provides interactive API docs at `/apidocs`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Python 3.9+
+- Flask
+- Flask-SQLAlchemy
+- Flask-CORS
+- Flasgger (Swagger UI)
+- PostgreSQL
+- Werkzeug for password hashing
+- psycopg2-binary
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Prerequisites
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Python 3.9+ installed
+- PostgreSQL installed and running
+- `virtualenv` (optional but recommended)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Clone the repository**
 
-### Code Splitting
+   ```bash
+   git clone https://github.com/yourusername/library-management-api.git
+   cd library-management-api
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. **Create a virtual environment**
 
-### Analyzing the Bundle Size
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate   # On Windows: venv\\Scripts\\activate
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. **Install dependencies**
 
-### Making a Progressive Web App
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. **Environment Variables**
+   - Create a `.env` file or set env vars directly:
+     ```bash
+     export DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DBNAME
+     export FLASK_APP=app.py
+     export FLASK_ENV=development
+     ```
+2. **Upload Folder** Ensure the `static/uploads/` directory exists:
+   ```bash
+   mkdir -p static/uploads
+   ```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Database Setup
 
-### `npm run build` fails to minify
+1. **Create the database** (replace placeholders):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   ```bash
+   psql -U postgres -c "CREATE DATABASE library_db;"
+   ```
+
+2. **Initialize tables**
+
+   ```bash
+   flask shell  # or python REPL
+   >>> from app import db
+   >>> db.create_all()
+   >>> exit()
+   ```
+
+3. **(Optional) Reset schema**
+
+   ```python
+   # In your app entrypoint for dev:
+   with app.app_context():
+       db.drop_all()
+       db.create_all()
+   ```
+
+---
+
+## Running the Application
+
+```bash
+# Activate venv if not already
+flask run --host=0.0.0.0 --port=5000
+```
+
+Access the API at `http://localhost:5000/`.
+
+---
+
+## API Documentation
+
+Swagger UI is available at:
+
+```
+http://localhost:5000/apidocs
+```
+
+Explore all endpoints interactively and try out requests.
+
+---
+
+## Usage Examples
+
+### Register & Login
+
+```bash
+# Register student or librarian
+curl -X POST http://localhost:5000/register \
+     -H 'Content-Type: application/json' \
+     -d '{"username":"john","password":"pass123","role":"student","email":"john@example.com"}'
+
+# Login
+echo '{"username":"john","password":"pass123"}' | \
+  curl -X POST http://localhost:5000/login -H 'Content-Type: application/json' -d @-
+```
+
+### Books Endpoints
+
+```bash
+# List all books
+go to http://localhost:5000/books
+
+# Add a book (librarian only)
+curl -X POST http://localhost:5000/books \
+  -F "user_id=1" -F "title=Clean Code" -F "quantity=5" -F "file=@clean_code.jpg"
+
+# Update a book (librarian only)
+# Use multipart/form-data to optionally upload new image
+curl -X PUT http://localhost:5000/books/1 \
+  -F "user_id=1" -F "title=Clean Architecture" -F "quantity=3" -F "file=@new_cover.jpg"
+```
+
+### Reservations
+
+```bash
+# Reserve books (student only)
+curl -X POST http://localhost:5000/reserve \
+  -H 'Content-Type: application/json' \
+  -d '{"user_id":2,"books":[{"book_id":1,"quantity":1}]}'
+
+# Fulfill reservation (librarian)
+curl -X PATCH http://localhost:5000/reservations/1/fulfill \
+  -H 'Content-Type: application/json' \
+  -d '{"user_id":1}'
+
+# Return books\>curl -X PATCH http://localhost:5000/reservations/1/return \
+  -H 'Content-Type: application/json' \
+  -d '{"user_id":1}'
+```
+
+### User Management
+
+```bash
+# List students (librarian only)
+curl http://localhost:5000/users
+
+# Update student info
+curl -X PUT http://localhost:5000/users/2 \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"jane","password":"newpass"}'
+
+# Delete student
+curl -X DELETE http://localhost:5000/users/2
+```
+
+### Image Upload
+
+```bash
+curl -X POST http://localhost:5000/upload-image \
+  -F "user_id=1" -F "file=@cover.jpg"
+```
+
+---
+
+## Project Structure
+
+```
+library_app/
+├── app.py
+├── swagger.yaml
+├── requirements.txt
+├── static/uploads/
+└── README.md
+```
+
+---
+
+## Contributing
+
+1. Fork the repo
+2. Create a branch (`git checkout -b feature/my-feature`)
+3. Commit changes (`git commit -m 'Add new feature'`)
+4. Push to branch (`git push origin feature/my-feature`)
+5. Open a pull request
+
+---
+
+## Resources
+
+- [Flask Documentation](https://flask.palletsprojects.com/)
+- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Swagger UI (Flasgger)](https://flasgger.pythonanywhere.com/)
+- [Create React App](https://create-react-app.dev/)
+- [React Router](https://reactrouter.com/)
+- [Axios](https://axios-http.com/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Werkzeug Security Utilities](https://werkzeug.palletsprojects.com/en/latest/utils/)
+
